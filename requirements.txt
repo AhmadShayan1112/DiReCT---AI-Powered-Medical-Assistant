@@ -1,1 +1,40 @@
+# Web Application
+streamlit>=1.22.0
+pillow>=9.4.0
 
+# Google AI
+google-generativeai>=0.3.0
+
+# OCR
+pytesseract>=0.3.10
+
+# Data Processing
+pandas>=1.5.3
+numpy>=1.24.3
+regex>=2023.3.23
+
+# AI/ML Models
+torch>=2.0.1
+bitsandbytes>=0.39.1
+transformers>=4.32.0
+sentence-transformers>=2.2.2
+huggingface-hub>=0.16.4
+
+# Vector Database and RAG
+langchain>=0.0.267
+langchain-community>=0.0.10
+faiss-cpu>=1.7.4
+# Use faiss-gpu instead if you're using CUDA
+
+# NLP and Text Processing
+pydantic>=1.10.8
+
+# Time and Data Handling
+python-dateutil>=2.8.2
+
+# Miscellaneous
+tqdm>=4.65.0
+requests>=2.31.0
+
+# Optional: For GPU support
+# cuda-python>=12.1.0
