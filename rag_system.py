@@ -79,7 +79,7 @@ try:
     print("Vectorstore loaded successfully!")
     
     # Login to Hugging Face
-    login(token="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")
+    login(token="Your_Hugging_face_token")
     
     # Setup retriever
     retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
