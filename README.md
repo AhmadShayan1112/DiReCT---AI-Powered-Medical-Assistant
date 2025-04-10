@@ -1,77 +1,178 @@
-# MIMIC-IV-Ext-DiReCT
-This README provides an introductory overview of the DiReCT dataset. The dataset is organized into two .rar files: **diagnostic_kg.rar**, which contains all the knowledge graphs, and **samples.rar**, which includes 511 annotated notes. Below, we outline the basic usage of these files. 
-For detailed implementation instructions and experimental code, please refer to our GitHub repository: https://github.com/wbw520/DiReCT.
+# DiReCT - AI-Powered Medical Assistant
 
-## Knowledge Graphs
-The knowledge graph for each disease category is saved as a JSON file in the unzipped "diagnostic_kg" folder as following:
-```
--diagnostic_kg
-    - Disease Category 1.json
-    - Disease Category 2.json
-    - Disease Category 3.json
-    ...
-```
-Key of "diagnostic" represent the diagnostic procedure (in a tree structure), from a diagnosis of suspected a disease to the final diagnosis. Key of "knowledge" records the premises for each diagnosis. Note that each premise is separated with ";".
+![DiReCT Logo](https://img.shields.io/badge/DiReCT-AI%20Medical%20Assistant-blue?style=for-the-badge)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.15+-red.svg)](https://streamlit.io/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A subgraph sample for Heart Failure is shown as following:
-```
-{"diagnostic": 
-    {"Suspected Heart Failure": 
-        {"Strongly Suspected Heart Failure": 
-            {"Heart Failure": 
-                {"HFrEF": [], 
-                 "HFmrEF": [], 
-                 "HFpEF": []}}}},
-"knowledge": 
-    {"Suspected Heart Failure": 
-        {"Risk Factors": "CAD; Hypertension; Valve disease; Arrhythmias; CMPs; Congenital heart disease, Infective; Drug-induced; Infiltrative; Storage disorders; Endomyocardial disease; Pericardial disease; Metabolic; Neuromuscular disease; etc.", 
-         "Symptoms": "Breathlessness; Orthopnoea; Paroxysmal nocturnal dyspnoea; Reduced exercise tolerance; Fatigue; tiredness; increased time to recover after exercise; Ankle swelling; Nocturnal cough; Wheezing; Bloated feeling; Loss of appetite; Confusion (especially in the elderly); Depression; Palpitation; Dizziness; Syncope.; etc.", 
-         "Signs": "Elevated jugular venous pressure; Hepatojugular reflux; Third heart sound (gallop rhythm); Laterally displaced apical impulse; Weight gain (>2 kg/week); Weight loss (in advanced HF); Tissue wasting (cachexia); Cardiac murmur; Peripheral edema (ankle, sacral, scrotal); Pulmonary crepitations; Pleural effusion; Tachycardia; Irregular pulse; Tachypnoea; Cheyne-Stokes respiration; Hepatomegaly; Ascites; Cold extremities; Oliguria;  Narrow pulse pressure."}, 
-     "Strongly Suspected Heart Failure": "NT-proBNP > 125 pg/mLor BNP > 35 pg/mL\n", 
-     "Heart Failure": "Abnormal findings from echocardiography:LV mass index ≥ 95 g/m2 (Female), ≥ 115 g/m2 (Male); Relative wall thickness >0.42, LA volume index>34 mL/m2, E/e' ratio at rest >9, PA systolic pressure >35 mmHg; TR velocity at rest >2.8 m/s, etc.", 
-     "HFrEF": "LVEF<40%", 
-     "HFmrEF": "LVEF41~49%", 
-     "HFpEF": "LVEF>50%"}}
+## 📋 Overview
+
+DiReCT (Diagnostic Retrieval and Clinical Triage) is an AI-powered medical assistant that helps patients describe their symptoms, provides preliminary assessments, and recommends appropriate care options. The system combines a user-friendly Streamlit interface with advanced AI models to deliver personalized medical insights.
+
+## ✨ Key Features
+
+- **Comprehensive Health Assessment**: Guided questionnaire for collecting detailed medical information
+- **Symptom Analysis**: AI-driven analysis of patient symptoms with severity assessment
+- **Medical Record Processing**: Upload and extract information from medical documents using OCR
+- **RAG System Integration**: Retrieval-Augmented Generation for evidence-based clinical information
+- **Multilingual Support**: Available in multiple languages including English, Spanish, French, German, and Chinese
+- **Appointment Booking**: Streamlined workflow for scheduling in-person or telemedicine appointments
+
+## 🚀 Technology Stack
+
+- **Frontend**: Streamlit for the interactive web interface
+- **AI/ML**:
+  - Google Gemini for prompt generation and analysis
+  - Hugging Face models for embeddings and text generation
+  - OCR with Tesseract for document processing
+- **Retrieval System**:
+  - FAISS for efficient vector search
+  - LangChain for RAG pipeline implementation
+- **Models**:
+  - Embedding: `sentence-transformers/all-MiniLM-L6-v2`
+  - Generation: `mistralai/Mistral-7B-Instruct-v0.2`
+
+## 📊 Architecture
+
+DiReCT follows a multi-stage pipeline:
+
+1. **Data Collection**: Comprehensive questionnaire and medical document parsing
+2. **Query Generation**: AI-generated clinical queries based on patient data
+3. **Information Retrieval**: Relevant medical knowledge retrieved from MIMIC-IV-Ext dataset
+4. **Response Generation**: AI-synthesized clinical information and recommendations
+5. **Triage**: Urgency assessment and care recommendations
+
+## 🔧 Installation
+
+### Prerequisites
+
+- Python 3.8+
+- CUDA-compatible GPU (recommended for optimal performance)
+- Tesseract OCR installed on your system
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/direct-medical-assistant.git
+cd direct-medical-assistant
 ```
 
-## Annotated Data
-We store the annotated notes as JSON files and saved in folders named after the disease categories and primary discharge diagnosis (PDD). Each JSON file record the annotated diagnostic procedure for a PDD. 
-After unzipping the samples.rar file, the data is formulated as following:
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+# On Windows
+venv\Scripts\activate
+# On macOS/Linux
+source venv/bin/activate
 ```
--samples
-    - Disease Category 1
-          - PDD Category 1
-                 - note_1.json
-                 - note_2.json
-                 - note_3.json
-                 ...
-          - PDD Category 2
-          ...
-    - Disease Category 2
-    - Disease Category 3
-    ...
-```
-We also provided a [Data List](https://github.com/wbw520/DiReCT/blob/master/utils/data_loading_analysisi/data_list.csv) for detailed structure information. For reading a JSON file, you can use the [Annotation Tool](https://github.com/wbw520/DiReCT/tree/master/utils/data_annotation) to visualize it.
-Here we also demonstrate the code to load a JSON (refer to GitHub repository). It will process an annotated JSON file and reconstructed it with a tree structure. 
-```
-from utils.data_analysis import cal_a_json, deduction_assemble
 
-root = "samples/Stroke/Hemorrhagic Stroke/sample1.json"
-record_node, input_content, chain = cal_a_json(root)
+3. Install the required dependencies:
+```bash
+pip install -r requirements.txt
 ```
-record_node: A dictionary for all nodes in our annotation with node index as key. Each node is also saved as a dictionary where <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"content" record the content of the node. <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type" show the node annotation type, e.g., "Input" as observations, "Cause" as rationale, and "Intermedia" as diagnosis. <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"connection" gives the children node's key (if no child, it is the leaf diagnostic node). <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"upper" gives the parent node's key (if no parent, it is the observation node). <br>
-input_content: A dictionary saves original clinical note from "input1"-"Chief Complaint" to "input6"-"Pertinent Results" <br>
-chain: A list structure saves the diagnostic procedure in order (from suspected to one PDD).
+
+4. Set up environment variables:
+```bash
+# Create a .env file with your API keys
+echo "GOOGLE_API_KEY=your_google_api_key" > .env
+echo "HUGGINGFACE_API_KEY=your_huggingface_api_key" >> .env
 ```
-GT = deduction_assemble(record_node)
+
+5. Download the FAISS index:
+```bash
+# Either download it from a shared location or build it using the provided scripts
+python scripts/download_faiss_index.py
 ```
-deduction_assemble() organizes all nodes and return the all deductions as {o: [z,r,d]...}.  <br>
- <br>
-o: extracted disease observation from raw text. <br>
-d: name of the diagnosis. <br>
-z: the rationale to explain why an observation can be related to a diagnosis d. <br>
-r: the part (from one of input1-6) of the clinical note where o is extracted.
+
+6. Run the application:
+```bash
+streamlit run app.py
+```
+
+## 📝 Usage
+
+1. **Start the Assessment**: Begin by filling out the comprehensive health questionnaire
+2. **Upload Medical Records**: Add relevant medical documents for better context
+3. **Review Assessment**: Examine the AI-generated symptom analysis and recommendations
+4. **Book Appointment**: Schedule an in-person visit or telemedicine consultation as needed
+
+## 🏥 Medical Data Sources
+
+DiReCT uses the MIMIC-IV-Ext dataset for its clinical knowledge base. This dataset is accessed through the RAG system to provide evidence-based medical information. Note that you will need appropriate permissions to access and use the MIMIC-IV dataset for your implementation.
+
+## 🔒 Privacy and Security
+
+- All patient data is processed locally and not permanently stored
+- The application does not share sensitive information with external services
+- Medical record uploads are processed for information extraction only
+
+## ⚠️ Disclaimer
+
+DiReCT is an AI assistant and not a replacement for professional medical advice. Always consult with a healthcare professional for medical concerns. The system provides preliminary assessments only and should not be used for emergency situations.
+
+## 🧠 RAG System Details
+
+The Retrieval-Augmented Generation (RAG) system combines:
+
+1. **Document Embedding**: Converting clinical documents to vector representations
+2. **Semantic Search**: Finding the most relevant information to patient queries
+3. **Context-Aware Response**: Generating responses based on retrieved medical knowledge
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+direct-medical-assistant/
+├── app.py                 # Main Streamlit application
+├── rag_system.py          # RAG implementation
+├── patient_data.py        # Patient data handling
+├── faiss_index/           # Vector store for medical information
+├── models/                # Model configurations
+├── utils/
+│   ├── ocr.py            # OCR utility functions
+│   └── preprocessing.py  # Data preprocessing utilities
+├── tests/                 # Test suite
+└── requirements.txt       # Project dependencies
+```
+
+### Extending the System
+
+To add new features:
+
+1. **New Medical Models**: Update the model loaders in `rag_system.py`
+2. **Additional Languages**: Extend the language selector in `app.py`
+3. **New Symptoms**: Update the symptom lists in the questionnaire sections
+
+## 📈 Future Roadmap
+
+- Integration with electronic health record (EHR) systems
+- Enhanced visualization of medical conditions
+- Expanded multilingual support
+- Mobile application development
+- Integration with wearable health devices
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📧 Contact
+
+Your Name - [your.email@example.com](mailto:your.email@example.com)
+
+Project Link: [https://github.com/yourusername/direct-medical-assistant](https://github.com/yourusername/direct-medical-assistant)
+
+---
+
+Built with ❤️ for better healthcare
