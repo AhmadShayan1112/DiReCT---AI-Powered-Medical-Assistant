@@ -150,12 +150,9 @@ To add new features:
 - Integration with electronic health record (EHR) systems
 - Enhanced visualization of medical conditions
 - Expanded multilingual support
-- Mobile application development
 - Integration with wearable health devices
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ---
 
 Built with ❤️ for better healthcare
